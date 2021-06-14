@@ -1,0 +1,209 @@
+{% extends "layout/bases.html" %}
+
+{% block content %}
+<script type="text/javascript">
+function isNumberKey(evt)
+{
+	var charCode = (evt.which) ? evt.which : event.keyCode
+	if (charCode > 31 && (charCode < 48 || charCode > 57))
+		return false;
+
+	return true;
+}
+</script>
+
+
+<div class="card">
+	<div class="card-header">
+		<h5>List Reservation </h5>
+		<hr>
+		<div class="input-group">
+			<div class="row ">
+				<form method="post">
+					{% csrf_token %}
+					<div class="form-group row">
+						
+						<div class="col-md-4  grey text-xs-center">
+							<input type="hidden" id="result" value="{{req.kat}}">
+							<select id="kategori" name="kategori" class="selectpicker form-control round teal">
+								<option value="status">Status</option>
+								<option value="podName">Pod Name</option>
+								<option value="date">Date</option>
+							</select>
+						</div>
+						<div class="col-md-8">
+							<div class="input-group">
+								<input type="text" class="form-control" id="search" name="search" placeholder="Search" aria-describedby="button-addon2" value="{{req.search}}">
+								<input type="text" class="form-control required" placeholder="Start Date" name="sdate" id="sdate" autocomplete="false" style="display:none" value="{{req.sdate}}">
+								<input type="text" class="form-control required" placeholder="End Date" name="edate" id="edate" data-toggle="datepicker" autocomplete="false" style="display:none" value="{{req.edate}}">
+								<div class="input-group-append" id="button-addon2">
+									<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#Pos_addCustomer"> Search</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+		<div class="heading-elements">
+			<ul class="list-inline mb-0">
+				<li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+				<li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+				<li><a data-action="close"><i class="ft-x"></i></a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card-content">
+		<div class="card-body">
+
+			<div class="card-body pt-0">
+				<div class="row pt-0">
+
+					<div class="col-sm-12">
+						<div class="card">
+							<div class="card-content">
+								<div class="row">
+									<table id="example" class="table table-striped table-bordered" style="width:100%">
+										{% csrf_token %}
+
+										<thead class="text-center">
+											<tr>
+												<th>Pod Name</th>
+												<th>User</th>
+												<th>Phone</th>
+												<th>Status</th>
+												<th>Price</th>
+												<th>Date</th>
+												<th>Time</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody id="tbody" class="text-center">
+											{% for res in page_obj %}
+											<tr>
+												<td>{{res.podName  }}</td>
+												<td>{{res.userName}}</td>
+												<td>{{res.phone}}</td>
+												<td>{{res.status }}</td>
+												<td>{{res.price}}</td>
+												<td>{{res.bookingTime|date:"d N Y"}}</td>
+												<td>{{res.bookingTime|date:"H:m:s"}}</td>
+												<td>{{res.id}}</td>
+												<td>
+													<a href="{% url 'home:detail' res.id %}" class="btn btn-warning btn-sm btn-edit">Detail</a>
+												</td>
+											</tr>
+
+											{% endfor %}
+
+
+										</tbody>
+
+									</table>
+
+								</div>
+								<div class="dataTables_info" id="productstable_info" role="status" aria-live="polite">
+									<b>Showing {{number}} to {{tonumber}} of {{pagin.count}} entries </b>
+								</div>
+								<div class=" float-right" >
+									<ul class="pagination">
+										{% if page_obj.has_previous %}											
+										<li class="paginate_button page-item previous" id="productstable_previous">
+											<a href="{% url "home:index" %}?page=1" aria-controls="productstable" data-dt-idx="0" tabindex="0" class="page-link">First</a>
+										</li>
+										<li class="paginate_button page-item previous" id="productstable_previous">
+											<a href="{% url "home:index" %}?page={{page_obj.previous_page_number}}" aria-controls="productstable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+										</li>
+										{% else %}
+										<li class="paginate_button page-item previous disabled" id="productstable_previous">
+											<a href="#" aria-controls="productstable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+										</li>
+										{% endif %}
+
+										{% for i in pagin.page_range  %}
+										{% if page_obj.number == i %}
+										<li class="paginate_button page-item active">
+										{% else %}
+										<li class="paginate_button page-item">
+										{% endif %}											
+										<a href="{% url "home:index" %}?page={{i}}" aria-controls="productstable" data-dt-idx="1" tabindex="0" class="page-link">{{i}}</a>
+										</li>
+										{% endfor %}
+
+										{% if page_obj.has_next %}											
+										<li class="paginate_button page-item next" id="productstable_next">
+											<a href="{% url "home:index" %}?page={{page_obj.next_page_number}}" aria-controls="productstable" data-dt-idx="6" tabindex="0" class="page-link">Next</a>
+										</li>
+										<li class="paginate_button page-item next" id="productstable_next">
+											<a href="{% url "home:index" %}?page={{page_obj.paginator.num_pages}}" aria-controls="productstable" data-dt-idx="6" tabindex="0" class="page-link">Last</a>
+										</li>
+										{% else %}
+										<li class="paginate_button page-item next disabled" id="productstable_next">
+											<a href="#" aria-controls="productstable" data-dt-idx="6" tabindex="0" class="page-link">Next</a>
+										</li>
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<script type="text/javascript">
+
+	$(document).ready(function() {
+		if($('#result').val() == ''){
+			$('#kategori').val('status')
+		} else {
+			$('#kategori').val($('#result').val())
+
+		}
+		var kat = $('#kategori').val()
+
+		if(kat == 'date') {
+			$('#sdate').css('display','')
+			$('#edate').css('display','')
+			$('#search').css('display','none')
+		} else {
+			$('#sdate').css('display','none')
+			$('#edate').css('display','none')
+			$('#search').css('display','')
+		}
+
+		$('#kategori').change(function() {
+			var data = $(this).val();
+
+			if(data == 'date') {
+				$('#sdate').css('display','')
+				$('#edate').css('display','')
+				$('#search').css('display','none')
+			} else {
+				$('#sdate').css('display','none')
+				$('#edate').css('display','none')
+				$('#search').css('display','')
+			}
+		});
+	});
+
+
+	$('[data-toggle="datepicker"]').datepicker({
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	});
+
+
+	$('#sdate').datepicker({autoHide: true, format: 'yyyy-mm-dd'});
+	$('.date30').datepicker({autoHide: true, format: 'yyyy-mm-dd'});
+
+
+
+	</script>
+	{% endblock content %}

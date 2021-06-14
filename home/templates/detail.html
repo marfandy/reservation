@@ -1,0 +1,105 @@
+{% extends "layout/bases.html" %}
+
+{% block content %}
+<script type="text/javascript">
+function isNumberKey(evt)
+{
+	var charCode = (evt.which) ? evt.which : event.keyCode
+	if (charCode > 31 && (charCode < 48 || charCode > 57))
+		return false;
+
+	return true;
+}
+</script>
+
+
+<div class="card">
+	<div class="card-header">
+		<h5>Detail Reservation 
+		</h5>
+		<a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+		<div class="heading-elements">
+			<ul class="list-inline mb-0">
+				<li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+				<li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+				<li><a data-action="close"><i class="ft-x"></i></a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card-content">
+		<div class="card-body">
+			{% for detail in details %}
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="stat">
+						<div class="name"> Pod Name</div>
+						<div class="value"> {{detail.podName}}</div>
+					</div>
+					<hr>
+				</div>
+				<div class="col-sm-6 stat-col">
+					<div class="stat">
+						<div class="name"> User Name</div>
+						<div class="value"> {{detail.userName}}</div>
+					</div>
+					<hr>
+				</div>
+
+				<div class="col-sm-6 stat-col">
+					<div class="stat">
+						<div class="name">Price</div>
+						<div class="value font-medium-2 font-weight-bold"> $ {{detail.price}}</div>
+					</div>
+					<hr>
+				</div>
+				<div class="col-sm-6 stat-col">
+					<div class="stat">
+						<div class="name"> Phone</div>
+						<div class="value"> {{detail.phone}}</div>
+					</div>
+					<hr>
+				</div>
+				<div class="col-sm-6 stat-col">
+					<div class="stat">
+						<div class="name"> Status</div>
+						<div class="value"> {{detail.status}}</div>
+					</div>
+					<hr>
+				</div>
+				<div class="col-sm-6 stat-col">
+					
+				</div>
+				<div class="col-sm-6 stat-col">
+					<div class="stat">
+						<div class="name"> Booking Date</div>
+						<div class="value"> {{detail.bookingTime|date:"d N Y"}}</div>
+					</div>
+					<hr>
+				</div>
+				<div class="col-sm-6 stat-col">
+					<div class="stat">
+						<div class="name"> Booking Time</div>
+						<div class="value"> {{detail.bookingTime|date:"H:m:s"}}</div>
+					</div>
+					<hr>
+				</div>
+			</div>
+			{% endfor %}
+			<div class="form-group row" style="margin-top:50px;">
+				<label class="col-md-2 col-form-label" for="pay_cat"></label>
+
+				<div class="col-md-4">
+					<a href="{% url 'home:index' %}" class="btn btn-primary btn-md btn-block"> Back </a>
+
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock content %}
